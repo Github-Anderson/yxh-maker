@@ -6,16 +6,18 @@ import random
 import webbrowser
 import tkinter.messagebox
 import platform
+import ctypes
 
 window = tk.Tk()
 window.title('生成器')
 #字体
 ans=' '
-f1 = tkFont.Font(size=20, weight=tkFont.BOLD)
+f1 = tkFont.Font(size=18, weight=tkFont.BOLD)
 f2 = tkFont.Font(size=13, weight=tkFont.BOLD)
 f3 = tkFont.Font(size=12)
 f4 = tkFont.Font(size=12, weight=tkFont.BOLD)
 f5 = tkFont.Font(size=11)
+f0 = tkFont.Font(size=10)
 v = tk.IntVar()
 v.set(1)
 c = tk.IntVar()
@@ -23,18 +25,38 @@ c.set(1)
 n=' '
 version='v1.4.5'
 system=platform.platform()
-sys=system[0:10];
+bottom_width = 9
+sys=system[0:5]
+if sys == 'Windo':
+    sys = 'Windows'
+    ac = 'Ctrl'
+    bottom_width = 8
 
-if sys == 'Windows-10':
-    sys = 'Windows 10'
-elif sys[0:5] == 'MacOS' | sys[0:5] == 'macOS':
+
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    ScaleFactor=ctypes.windll.shcore.GetScaleFactorForDevice(0)
+    window.tk.call('tk', 'scaling', ScaleFactor/75)
+
+    window.option_add("*Font",'微软雅黑 10')
+    f1 = tkFont.Font(family='Microsoft YaHei', size=18, weight=tkFont.BOLD)
+    f2 = tkFont.Font(family='Microsoft YaHei', size=13, weight=tkFont.BOLD)
+    f3 = tkFont.Font(family='Microsoft YaHei', size=12)
+    f4 = tkFont.Font(family='Microsoft YaHei', size=12, weight=tkFont.BOLD)
+    f5 = tkFont.Font(family='Microsoft YaHei', size=11)
+    f0 = tkFont.Font(family='Microsoft YaHei', size=10)
+    
+elif sys == 'MacOS' | sys == 'macOS':
     sys = 'MacOS'
+    ac = 'Command'
+elif sys == 'Linux':
+    sys = 'Linux'
+    ac = 'Ctrl'
 
 #左侧字
 tk.Label(window, text="营销号生成器",font=f1).grid(row=0,column=0,columnspan=4)
-tk.Label(window, text="主体：").grid(row=1,column=0)
-tk.Label(window, text="事件：").grid(row=2,column=0)
-tk.Label(window, text="说法：").grid(row=3,column=0)
+tk.Label(window, text="主体：",font=f0).grid(row=1,column=0)
+tk.Label(window, text="事件：",font=f0).grid(row=2,column=0)
+tk.Label(window, text="说法：",font=f0).grid(row=3,column=0)
 tk.Label(window, text=version).grid(row=9,column=0,columnspan=2,sticky="w")
 #tk.Label(window, text="——Made by Anderson_Yang      ").grid(row=9,column=2,columnspan=2,sticky="e")
 #输入框
@@ -48,7 +70,7 @@ e3.grid(row=3, column=1)
 check = tk.BooleanVar()
 #打开网页
 def web1():
-    webbrowser.open("https://andersonyang.icoc.me/")
+    webbrowser.open("https://github-anderson.github.io")
 def web2():
     webbrowser.open("https://github.com/Github-Anderson/yxh-maker")
 #当生成被点击
@@ -117,14 +139,14 @@ def info1():
     i1.grid(row=0,column=0,rowspan=4)
     tk.Label(info,text="作者:Anderson_Yang").grid(row=1,column=1,columnspan=2,sticky="w")
     tk.Label(info,text="版本:"+version+'('+sys+')').grid(row=2,column=1,columnspan=2,sticky="w")
-    tk.Label(info,text="主页:https://andersonyang.icoc.me/").grid(row=3,column=1,columnspan=2,sticky="w")
+    tk.Label(info,text="主页:https://github-anderson.github.io").grid(row=3,column=1,columnspan=2,sticky="w")
     tk.Label(info,text="此程序已在GitHub开源                    ",font=f4).grid(row=4,column=1,columnspan=2,sticky="w")
     tk.Label(info,text="Copyright © 2019-2020.",font=f5).grid(row=5,column=1,columnspan=2)
     tk.Button(info, text="主页", width=8, command=web1).grid(row=4, column=0)
     tk.Button(info, text="关闭", width=8, command=info.destroy).grid(row=5, column=0)
     tk.Button(info, text="前往", width=8, command=web2).grid(row=4, column=2,sticky="e")
     
-    #tk.messagebox.showinfo(title='帮助', message='作者:Anderson_Yang\n版本信息:'+version+'\n主页:https://andersonyang.icoc.me')
+    #tk.messagebox.showinfo(title='帮助', message='作者:Anderson_Yang\n版本信息:'+version+'\n主页:https://github-anderson.github.io')
 
 def help1():
     e1.delete(0,tk.END)
@@ -150,7 +172,7 @@ def im1():
     def bc1():
         name1=en1.get()
         ans1=t1.get('0.1','end')+t2.get('0.1','end')
-        an1 = open(name1+'.txt',mode='w')
+        an1 = open(name1+'.txt',mode='w',encoding="utf-8")
         an1.write(ans1)
         an1.close()
         im.destroy()
@@ -170,10 +192,10 @@ def im1():
     tk.Button(im,text="关闭", width=7,command=im.destroy).grid(row=3, column=1,columnspan=2,sticky="e")
 
 #按钮
-tk.Button(window, text="生成", width=9, command=show).grid(row=5, column=0, columnspan=2,sticky="w")
-tk.Button(window, text="导出", width=9, command=im1).grid(row=5, column=0, columnspan=2,sticky="e")
-tk.Button(window, text="清空", width=9, command=clear).grid(row=6, column=0, columnspan=2,sticky="w")
-tk.Button(window, text="退出", width=9, command=window.quit).grid(row=6, column=0, columnspan=2,sticky="e")
+tk.Button(window, text="生成", width=bottom_width, command=show).grid(row=5, column=0, columnspan=2,sticky="w")
+tk.Button(window, text="导出", width=bottom_width, command=im1).grid(row=5, column=0, columnspan=2,sticky="e")
+tk.Button(window, text="清空", width=bottom_width, command=clear).grid(row=6, column=0, columnspan=2,sticky="w")
+tk.Button(window, text="退出", width=bottom_width, command=window.quit).grid(row=6, column=0, columnspan=2,sticky="e")
 #帮助按钮
 tk.Button(window, text="帮助", width=9, command=help1).grid(row=9, column=3,sticky='w')
 tk.Button(window, text="版本信息", width=9, command=info1).grid(row=9, column=3,sticky="e")
@@ -193,7 +215,7 @@ tk.Radiobutton(window,text='视频配音',variable=v,value=2).grid(row=4,columns
 m1 = tk.Menu(window)
 window.config(menu=m1)
 mb1 = tk.Menu(m1,tearoff=0)
-mb1.add_command(label="导出",command=im1,accelerator='Command-S')
+mb1.add_command(label="导出",command=im1,accelerator=ac+'-S')
 mb1.add_command(label="帮助",command=help1)
 mb1.add_separator()
 mb1.add_command(label="检查更新",command=up1)
@@ -202,9 +224,9 @@ m1.add_cascade(label="文件", menu=mb1)
 
 window.config(menu=m1)
 mb2 = tk.Menu(m1,tearoff=0)
-mb2.add_command(label="生成",command=show,accelerator='Command-T')
-mb2.add_command(label="清空",command=clear,accelerator='Command-R')
-mb2.add_command(label="关闭",command=window.quit,accelerator='Command-Q')
+mb2.add_command(label="生成",command=show,accelerator=ac+'-T')
+mb2.add_command(label="清空",command=clear,accelerator=ac+'-R')
+mb2.add_command(label="关闭",command=window.quit,accelerator=ac+'-Q')
 m1.add_cascade(label="操作", menu=mb2)
 
 window.mainloop()
